@@ -4,7 +4,7 @@ namespace libs\app;
 
 class User {
 
-    // client, admin
+    // client, admin, app
     public $level = 'client';
 
     public function __construct($key){

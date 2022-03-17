@@ -1,19 +1,22 @@
 <?php 
 
 include "../api/autoload.php";
+include "../api/source/response.php";
 
 use libs\app\Config as Config;
 use libs\app\User as user;
+use libs\app\Route as Route;
 
-if(!$request->vars['file'] || !$request->vars['func']){
-    echo "erro 0"; // criar response error - BAD REQUEST
+if(!$request->vars['route'] || !$request->vars['func']){
+    _error(400, 'Bad Request');
     exit;
 }
 
-$file =  "../api/services/".$request->vars['file'].".php";
+include "../api/source/routes.php";
+$file = Route::get_file($request->vars['route']);
 
-if(!file_exists($file)){ 
-    echo "erro 1"; // criar response error - 404 - A
+if(!$file || !file_exists($file)){ 
+    _error(404, 'Not Found - A');
     exit;
 }
 
@@ -22,14 +25,14 @@ include $file;
 if(!_is_public()){
     
     if(!$request->vars['key']){
-        echo "erro 2"; // criar response error - UNAUTORIZED A
+        _error(401, 'Unauthorized - A'); 
         exit;
     }
     
     $user = new user($request->vars['key']);
     
     if(!_is_authentic($user)){
-        echo "erro 3"; // criar response error - UNAUTORIZED B
+        _error(401, 'Unauthorized - B');
         exit;
     }
 
@@ -38,7 +41,7 @@ if(!_is_public()){
 $func = $request->vars['func'];
 
 if(!function_exists($func) || $func == '_is_autentic' || $func == '_is_public'){
-    echo "erro 4"; // criar response error 404 - B
+    _error(404, 'Not Found - B'); 
     exit;
 }
 
