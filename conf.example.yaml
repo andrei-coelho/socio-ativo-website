@@ -1,0 +1,18 @@
+# %YAML 1.2
+---
+  
+production: false
+production_url: http://localhost:3000/
+development_url: http://localhost:3000/
+
+# banco de dados
+database:
+
+  default:
+    driver: mysql
+    host: localhost
+    dbname: dbname
+    user: root
+    pass:
+    charset: utf8
+    port:
