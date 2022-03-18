@@ -4,6 +4,7 @@
 production: false
 production_url: http://localhost:3000/
 development_url: http://localhost:3000/
+salt: my_salt
 
 # banco de dados
 database:

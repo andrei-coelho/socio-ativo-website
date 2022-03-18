@@ -1,10 +1,9 @@
 <?php 
 
 use libs\app\User as user;
-use src\Request as request;
 
 function _is_public(){
-    return false;    
+    return true;    
 }
 
 function _is_authentic(user $user){
@@ -12,5 +11,5 @@ function _is_authentic(user $user){
 }
 
 function test(){
-    print_r(request::raw());
+    echo date('Y-m-d H:i.s').".000000";
 }

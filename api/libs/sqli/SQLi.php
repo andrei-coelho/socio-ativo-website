@@ -53,7 +53,7 @@ class SQLi {
 			
 		$res = new Result($st);
 		if($insert) return $res->hasError() ? false : $pdo->lastInsertId();
-		return $res->hasError() ? $res->getCode() : true;
+		return !$res->hasError();
 		
 	}
 

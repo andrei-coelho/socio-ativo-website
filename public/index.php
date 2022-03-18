@@ -2,7 +2,7 @@
 
 include "../src/Request.php";
 
-$request = new src\Request(['req', 'route', 'func', 'key']);
+$request = new src\Request(['req', 'route', 'func', 'session', 'secret']);
 
 if($request->vars['req'] != 'api') {
     $file = "sources/".$request->vars['req']."_source.html";
