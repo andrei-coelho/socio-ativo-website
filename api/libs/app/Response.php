@@ -5,6 +5,7 @@ namespace libs\app;
 class Response {
 
     private $data, $code, $message, $error = false;
+    private $session = "";
 
     function __construct(array $data, int $code = 200, string $message = ""){
         
@@ -20,11 +21,16 @@ class Response {
         return $this->data;
     }
 
+    function setSession($session){
+        $this->session = $session;
+    }
+
     function response(){
         return json_encode([
             "error"   => $this->error,
             "code"    => $this->code,
             "message" => $this->message,
+            "session" => $this->session,
             "data"    => $this->data
         ],  JSON_PRESERVE_ZERO_FRACTION  | 
             JSON_PARTIAL_OUTPUT_ON_ERROR |

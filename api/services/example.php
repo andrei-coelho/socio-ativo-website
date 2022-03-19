@@ -3,13 +3,13 @@
 use libs\app\User as user;
 
 function _is_public(){
-    return true;    
+    return false;    
 }
 
-function _is_authentic(user $user){
-    return in_array($user->level, ['admin', 'client', 'app']);
+function _is_authentic(){
+    return in_array(_user()->level(), ['admin']);
 }
 
 function test(){
-    echo date('Y-m-d H:i.s').".000000";
+    return _response(["teste"=>"1"]);
 }

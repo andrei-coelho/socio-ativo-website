@@ -9,5 +9,7 @@ function _error($code = 404, $message = "Not Found"){
 }
 
 function _response(array $data){
-    return new Response($data);
+    $response = new Response($data);
+    if(_user()) $response->setSession(_user()->session());
+    return $response;
 }

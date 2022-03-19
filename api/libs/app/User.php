@@ -41,7 +41,23 @@ class User {
         if(!$userSel || $userSel->rowCount() == 0) return false;
         
         $user = $userSel->fetchAssoc();
-        self::$user = new User($user['id'], $user['nome'], $user['email'], $user['level'], $user['session'], $user['expire']);
+
+        $dhoje   = new \DateTime();
+        $dexpire = new \DateTime($user['expire']);
+
+        if($dhoje > $dexpire) return false;
+        
+        $sessionu = $user['session'];
+        $expireu  = $user['expire'];
+
+        if($dhoje->diff($dexpire)->h < 1){
+            $nsess = _gen_session((int)$user['id']);
+            if(!$nsess) return false;
+            $sessionu = $nsess[0];
+            $expireu  = $nsess[1];
+        }
+        
+        self::$user = new User($user['id'], $user['nome'], $user['email'], $user['level'], $sessionu, $expireu);
         
         return true;
     }
@@ -85,6 +101,10 @@ class User {
 
     public function email(){
         return $this->email;
+    }
+
+    public function session(){
+        return $this->session;
     }
 
     public function to_string(){
