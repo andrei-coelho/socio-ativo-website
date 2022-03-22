@@ -1,5 +1,6 @@
 # Conf.yaml
 conf.yaml
+api/external_libs/*/
 
 # Logs
 logs
