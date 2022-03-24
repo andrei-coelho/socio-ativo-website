@@ -2,13 +2,6 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-include "../api/autoload.php";
-include "../api/helpers/config.php";
-include "../api/helpers/response.php";
-include "../api/helpers/sqli.php";
-include "../api/helpers/user.php";
-include "../api/helpers/session.php";
-
 use libs\app\Config as Config;
 use libs\app\Route as Route;
 use libs\app\User as user;
