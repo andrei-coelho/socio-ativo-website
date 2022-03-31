@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y git unzip zip && apt-get install -y lib
 RUN cp /etc/apache2/mods-available/rewrite.load /etc/apache2/mods-enabled/
 
 RUN docker-php-ext-install bcmath
+RUN docker-php-ext-install pdo pdo_mysql
 
 RUN pecl install grpc
 RUN echo 'extension=grpc.so' >> $PHP_INI_DIR/conf.d/grpc.ini

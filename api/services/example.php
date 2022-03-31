@@ -3,13 +3,19 @@
 use libs\app\User as user;
 
 function _is_public(){
-    return false;    
+    return true;    
 }
 
 function _is_authentic(){
     return in_array(_user()->level(), ['admin']);
 }
 
-function test(){
-    return _response(["teste"=>"1"]);
+function test(string $nome, int $inteiro, float $dinheiro, $test, bool $status){
+    return _response([
+        "nome"=>$nome,
+        "inteiro" => $inteiro,
+        "dinheiro" => $dinheiro,
+        "test" => $test,
+        "status" => $status
+    ]);
 }

@@ -21,6 +21,7 @@ class Request {
     public static function raw(){
         if(!self::$raw) {
             self::$raw = json_decode(file_get_contents('php://input'), true);
+            if(!self::$raw) self::$raw = [];
         }
         return self::$raw;
     }

@@ -13,6 +13,7 @@ class DataBase {
     private static $instances;
 	
 	private $callback;
+    public  $func_to_call;
 
     private function __construct($alias, $driver, $host, $dbname, $user, $pass, $charset, $port, $callback){
         
@@ -29,7 +30,7 @@ class DataBase {
     }
 
     
-    public static function open_links(){
+    public static function open_links($callme){
 
         $databaseArray = Config::get()['database'];
         foreach ($databaseArray as $alias => $db) {
@@ -44,13 +45,13 @@ class DataBase {
                     $db['charset'],
                     $db['port'],
                     function($e, $db){
-                        // se estiver em desenvolvimento mostre o erro
-                        echo "erro ao se connectar";
+                        if(!_is_in_production()) echo "erro ao se connectar com o banco. ".$e->getMessage();
+                        ($db->func_to_call)();
                     }
                 );
+                self::$instances[$alias]->func_to_call = $callme;
             } else {
-                echo "ta faltando info";
-                // se estiver em desenvolvimento mostre o erro
+                if(!_is_in_production()) echo "ta faltando info";
             }
         }
 
@@ -68,7 +69,7 @@ class DataBase {
         if(!$this->open){
         
             $strConn = $this->driver.":host=".$this->host.";";
-            if($this->port) $strConn .= "port=".$this->port;
+            if($this->port) $strConn .= "port=".$this->port.";";
             $strConn .= "dbname=".$this->dbname.";";
             $strConn .= "charset=".$this->charset;
 

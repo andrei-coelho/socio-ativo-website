@@ -1,3 +1,4 @@
 <?php 
 
-echo "testando api do google...\n";
+include "../api/external_libs/google-ads-php/vendor/autoload.php";
+

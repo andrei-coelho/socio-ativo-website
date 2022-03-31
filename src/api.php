@@ -40,15 +40,18 @@ $vars = request::raw();
 
 $validParameters = [];
 
+
 foreach ($parameters as $parameter) {
-    
+
     $exists = array_key_exists($parameter->getName(), $vars);
-    
-    if (!$exists && !$parameter->isOptional()) _error(400, 'Bad Request B');
+
+    $type = $parameter->getType() ? $parameter->getType() : 'mixed';
+
+    if (!$exists && !$parameter->isOptional()) _error(400, 'Bad Request B - there are variables that were not sent and that are not optional');
 
     if(!$exists) continue;
 
-    $validParameters[$parameter->getName()] = $vars[$parameter->getName()];
+    $validParameters[$parameter->getName()] = _clean_value($vars[$parameter->getName()], $type);
 }
 
 $resp = $refFunction->invoke(...$validParameters);
@@ -56,3 +59,21 @@ if(!$resp) $resp = _response([]);
 
 echo $resp->response();
 
+function _clean_value($value, $type = 'mixed'){
+
+    if($type == 'array'){
+        if(!is_array($value)) return [_clean_value($value)];
+        $valueFinal = [];
+        foreach ($value as $v) {
+            $valueFinal[] = is_array($v) ? _clean_value($v, 'array') : _clean_value($v);
+        }
+        return $valueFinal;
+    }
+
+    if($type == 'mixed' || $type == 'string')  $value = addslashes($value);
+    if($type == 'int') $value = (int)$value;
+    if($type == 'float') $value = (float)$value;
+
+    return $value;
+
+}
