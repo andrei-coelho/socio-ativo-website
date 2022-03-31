@@ -6,10 +6,6 @@ function _is_public(){
     return true;    
 }
 
-function _is_authentic(){
-    return in_array(_user()->level(), ['admin', 'app', 'client']);
-}
-
 function login($pass, $email){
     
     $selUser = _query(
@@ -19,7 +15,9 @@ function login($pass, $email){
         WHERE users.email = '$email';
     ");
     
-    if(!$selUser) _error(404, 'Usuário não existe');
+    if(!$selUser) _error(500, 'Ocorreu um problema ao tentar realizar o login. Tente novamente mais tarde.');
+    if($selUser->rowCount() == 0) _error(404, 'Usuário não existe ou a senha está incorreta');
+    
     $user = $selUser->fetchAssoc();
     
     $status = password_verify($pass, $user['senha']);
@@ -29,12 +27,8 @@ function login($pass, $email){
         if(!$sess) _error(500, 'Falha no servidor ao tentar gerar uma sessão');
     }
     unset($user['senha']);
-    return $status ? _response($user, $sess[0]) : _error(404, 'Senha errada');
+    return $status ? _response($user, $sess[0]) : _error(404, 'Usuário não existe ou a senha está incorreta');
 
-}
-
-function test(){
-    return _response(_user()->to_array());
 }
 
 function forgot(){

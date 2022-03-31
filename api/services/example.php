@@ -7,7 +7,7 @@ function _is_public(){
 }
 
 function _is_authentic(){
-    return in_array(_user()->level(), ['admin']);
+    return in_array(_user()->level(), ['admin', 'app', 'client']);
 }
 
 function test(string $nome, int $inteiro, float $dinheiro, $test, bool $status){

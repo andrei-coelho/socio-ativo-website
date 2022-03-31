@@ -1,7 +1,7 @@
 <?php 
 
-function _gen_private_key(){
-    return hash('sha512', _salt()._user()->id().mt_rand(0,1000).date('d-m-Y_h:i:s')."_private_");
+function _gen_private_key($user_id = 0){
+    return hash('sha512', _salt().($user_id > 0 ? $user_id : _user()->id()).mt_rand(0,1000).date('d-m-Y_h:i:s')."_private_");
 }
 
 function _gen_session(int $id_user){

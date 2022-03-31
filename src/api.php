@@ -30,6 +30,7 @@ if(!_is_public()){
 }
 
 $func = $request->vars['func'];
+if($func[0] == "_") $func = substr($func, 1, strlen($func) - 1);
 
 if(!function_exists($func) || $func == '_is_autentic' || $func == '_is_public')
     _error(404, 'Not Found - B'); 

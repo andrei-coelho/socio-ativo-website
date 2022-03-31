@@ -50,10 +50,15 @@ class SQLi {
 			
 		if(count($values) > 1)
 			self::setBinds($st, $values);
-			
-		$res = new Result($st);
-		if($insert) return $res->hasError() ? false : $pdo->lastInsertId();
-		return !$res->hasError();
+		
+		try {
+			$res = new Result($st);
+			if($insert) return $res->hasError() ? false : $pdo->lastInsertId();
+			return !$res->hasError();
+		} catch(\PDOException $e) {
+			if(!_is_in_production()) echo $e->getMessage();
+			return false;
+		}
 		
 	}
 
