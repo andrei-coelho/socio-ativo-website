@@ -9,8 +9,8 @@ function _is_authentic(){
 }
 
 function _check_cliente(int $id_cliente){
-    $client = _query("SELECT * FROM clientes WHERE id = $id_cliente");
-    if(!$client) _error(404, "Cliente não existe");
+    $client = _query("SELECT * FROM clientes WHERE id = $id_cliente AND ativo = 1");
+    if(!$client) _error(404, "Cliente não existe ou está bloqueado");
 }
 
 /**
@@ -31,10 +31,40 @@ function list_clientes(int $ativo = 1, int $page = 1, int $limit = 10, $orderBY 
 
 function list_user_cliente(int $id_cliente, int $ativo = 1){
     // retorna a lista de usuarios do cliente
+    $q = _query(
+        "SELECT 
+            users.nome, users.email, user_types.slug as level
+        FROM users_cliente 
+            JOIN users ON users.id = users_cliente.user_id
+            JOIN clientes ON clientes.id = users_cliente.cliente_id
+            JOIN user_types ON user_types.id = users.user_type
+        WHERE 
+            users_cliente.ativo = $ativo 
+            AND clientes.id = $id_cliente 
+            AND user_types.slug = 'cliente'
+        ORDER BY users_cliente.id DESC;
+    ");
+    if(!$q) _error(500, "Ocorreu um erro ao tentar realizar uma consulta");
+    return _response($q->fetchAllAssoc());
 }
 
 function list_app_cliente(int $id_cliente, int $ativo = 1){
     // retorna a lista de aplicações que são usadas pelo cliente para acesso a api
+    $q = _query(
+        "SELECT 
+            users.nome, user_types.slug as level
+        FROM secret_keys 
+            JOIN users ON users.id = secret_keys.user_id
+            JOIN clientes ON clientes.id = secret_keys.cliente_id
+            JOIN user_types ON user_types.id = users.user_type
+        WHERE 
+            secret_keys.ativo = $ativo 
+            AND clientes.id = $id_cliente 
+            AND user_types.slug = 'app'
+        ORDER BY secret_keys.id DESC;
+    ");
+    if(!$q) _error(500, "Ocorreu um erro ao tentar realizar uma consulta");
+    return _response($q->fetchAllAssoc());
 }
 
 /**
@@ -88,12 +118,18 @@ function edit_user_cliente(int $id_user_cliente, $nome, $email, $senha){
 
 function block_app_user($secret_key){
     // bloqueia uma aplicação de um cliente
+    return _exec("UPDATE secret_keys SET ativo = 0 WHERE secret_key = '$secret_key'") 
+    ? _response() : _error(500, "Não foi possível realizar as mudanças");
 }
 
 function block_user_cliente(int $id_user_cliente){
     // bloqueia um usuario de um cliente
+    return _exec("UPDATE users_cliente SET ativo = 0 WHERE id = $id_user_cliente") 
+    ? _response() : _error(500, "Não foi possível realizar as mudanças");
 }
 
 function block_cliente(int $id_cliente){
     // bloqueia um cliente
+    return _exec("UPDATE clientes SET ativo = 0 WHERE id = $id_cliente") 
+    ? _response() : _error(500, "Não foi possível realizar as mudanças");
 }
