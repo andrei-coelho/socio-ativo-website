@@ -1,6 +1,7 @@
 # Conf.yaml
 conf.yaml
 api/external_libs/*/
+credentials.json
 
 # Logs
 logs
